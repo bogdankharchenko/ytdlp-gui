@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2025-10-04
+
+### New Features
+
+- **Warm Earth Theme**: New warm, earthy color palette for both light and dark modes
+  - Dark mode: Rich terracotta accent (#D97757) on warm dark backgrounds
+  - Light mode: Soft beige backgrounds with terracotta accents
+  - Easy on the eyes with warm tones throughout
+- **Download Success UI**: Clickable file path displayed after download completes
+  - Opens file with default app or reveals in Finder/Explorer
+  - Subtle muted text with truncation for long paths
+- **Progress Indicator**: Download progress now fills the button from left to right
+  - No separate progress bar - cleaner UI
+  - Visual feedback integrated into download button
+- **File Overwrite**: Downloads now properly overwrite existing files with `--force-overwrites`
+- **Compact UI**: Reduced vertical spacing and window height (700x480)
+  - Reorganized format selection into cleaner toggle-style layout
+  - Type and Quality selectors combined in video info card
+  - Resizable window with minimum dimensions
+
+### Bug Fixes
+
+- **Development Mode FFmpeg**: Fixed ffmpeg not found in dev mode by using CARGO_MANIFEST_DIR
+- **ARM64 FFmpeg**: Fixed architecture mismatch - now downloads correct ARM64 binary for Apple Silicon
+  - Documented official FFmpeg sources and ARM64 limitation
+- **Opener Permissions**: Added proper permissions for opening downloaded files in user directories
+
+### Improvements
+
+- Simplified download button text to just "Download" (no Video/Audio suffix)
+- Better hover states in light theme with readable text colors
+- More compact window size while maintaining usability
+- Official FFmpeg download sources documented in build.rs
+
 ## [0.1.2] - 2025-10-04
 
 ### Bug Fixes

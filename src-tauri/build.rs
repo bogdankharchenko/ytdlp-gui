@@ -91,14 +91,21 @@ fn download_ffmpeg() -> Result<(), Box<dyn std::error::Error>> {
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH")?;
 
     // Determine the binary name and download URL based on platform
+    // Note: Official FFmpeg download page (https://www.ffmpeg.org/download.html) recommends:
+    // - macOS: https://evermeet.cx/ffmpeg/ (x86_64 only, no ARM64 support)
+    // - Windows: https://github.com/BtbN/FFmpeg-Builds/releases
+    // - Linux: https://johnvansickle.com/ffmpeg/
+    //
+    // For macOS ARM64: evermeet.cx doesn't provide ARM64 binaries, and there are no official
+    // FFmpeg ARM64 builds for macOS. We use osxexperts.net which provides working ARM64 builds.
     let (binary_name, download_url) = match (target_os.as_str(), target_arch.as_str()) {
         ("macos", "aarch64") => (
             "ffmpeg-aarch64-apple-darwin",
-            "https://evermeet.cx/ffmpeg/getrelease/ffmpeg/zip"
+            "https://www.osxexperts.net/ffmpeg7arm.zip"  // ARM64 build (no official source available)
         ),
         ("macos", "x86_64") => (
             "ffmpeg-x86_64-apple-darwin",
-            "https://evermeet.cx/ffmpeg/getrelease/ffmpeg/zip"
+            "https://evermeet.cx/ffmpeg/getrelease/ffmpeg/zip"  // Official recommended source
         ),
         ("windows", _) => (
             "ffmpeg-x86_64-pc-windows-msvc.exe",

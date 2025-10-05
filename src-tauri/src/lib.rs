@@ -111,28 +111,51 @@ async fn download_video(
 ) -> Result<String, String> {
     let mut args = vec![];
 
-    // Get ffmpeg path - Tauri v2 places sidecar binaries with the platform-specific suffix removed
-    // They end up in Contents/MacOS/ on macOS, next to the main binary
-    let resource_dir = app.path()
-        .resource_dir()
-        .map_err(|e| format!("Failed to get resource dir: {}", e))?;
+    // Get ffmpeg path - different in dev vs production
+    let ffmpeg_path = if cfg!(debug_assertions) {
+        // Development mode: use binaries from binaries/ directory relative to cargo manifest
+        let target_os = std::env::consts::OS;
+        let target_arch = std::env::consts::ARCH;
 
-    // On macOS, binaries are in ../MacOS relative to Resources
-    // On other platforms, they're directly in the resource dir
-    let bin_dir = if cfg!(target_os = "macos") {
-        resource_dir.parent().unwrap().join("MacOS")
+        let ffmpeg_name = match (target_os, target_arch) {
+            ("macos", "aarch64") => "ffmpeg-aarch64-apple-darwin",
+            ("macos", "x86_64") => "ffmpeg-x86_64-apple-darwin",
+            ("windows", _) => "ffmpeg-x86_64-pc-windows-msvc.exe",
+            ("linux", "x86_64") => "ffmpeg-x86_64-unknown-linux-gnu",
+            ("linux", "aarch64") => "ffmpeg-aarch64-unknown-linux-gnu",
+            _ => "ffmpeg",
+        };
+
+        // Use CARGO_MANIFEST_DIR which points to src-tauri directory
+        let manifest_dir = std::env::var("CARGO_MANIFEST_DIR")
+            .unwrap_or_else(|_| ".".to_string());
+        std::path::PathBuf::from(manifest_dir)
+            .join("binaries")
+            .join(ffmpeg_name)
     } else {
-        resource_dir.clone()
-    };
+        // Production mode: Tauri v2 places sidecar binaries with the platform-specific suffix removed
+        // They end up in Contents/MacOS/ on macOS, next to the main binary
+        let resource_dir = app.path()
+            .resource_dir()
+            .map_err(|e| format!("Failed to get resource dir: {}", e))?;
 
-    // Tauri strips the platform suffix from sidecar binaries, so it's just "ffmpeg" (or "ffmpeg.exe" on Windows)
-    let ffmpeg_name = if cfg!(target_os = "windows") {
-        "ffmpeg.exe"
-    } else {
-        "ffmpeg"
-    };
+        // On macOS, binaries are in ../MacOS relative to Resources
+        // On other platforms, they're directly in the resource dir
+        let bin_dir = if cfg!(target_os = "macos") {
+            resource_dir.parent().unwrap().join("MacOS")
+        } else {
+            resource_dir.clone()
+        };
 
-    let ffmpeg_path = bin_dir.join(ffmpeg_name);
+        // Tauri strips the platform suffix from sidecar binaries, so it's just "ffmpeg" (or "ffmpeg.exe" on Windows)
+        let ffmpeg_name = if cfg!(target_os = "windows") {
+            "ffmpeg.exe"
+        } else {
+            "ffmpeg"
+        };
+
+        bin_dir.join(ffmpeg_name)
+    };
 
     // Only add ffmpeg-location if the file exists
     if ffmpeg_path.exists() {
@@ -169,6 +192,7 @@ async fn download_video(
 
     args.push("-o".to_string());
     args.push(output_path.clone());
+    args.push("--force-overwrites".to_string());
     args.push("--newline".to_string());
     args.push("--no-playlist".to_string());
     args.push(url.clone());

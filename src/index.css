@@ -4,48 +4,50 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+    /* Light Theme - Warm Earth Tones */
+    --background: 40 20% 92%;        /* softer warm beige */
+    --foreground: 24 8% 15%;         /* dark warm gray #262624 */
+    --card: 40 25% 96%;              /* light warm card */
+    --card-foreground: 24 8% 15%;    /* dark warm gray */
+    --popover: 40 25% 96%;           /* light warm card */
+    --popover-foreground: 24 8% 15%; /* dark warm gray */
+    --primary: 17 64% 59%;           /* terracotta #D97757 */
+    --primary-foreground: 40 80% 98%;/* bright warm white */
+    --secondary: 40 15% 88%;         /* warm gray */
+    --secondary-foreground: 24 8% 15%;
+    --muted: 40 15% 88%;             /* warm gray */
+    --muted-foreground: 30 6% 35%;   /* darker muted text */
+    --accent: 40 15% 88%;            /* warm gray for hover */
+    --accent-foreground: 24 8% 15%;  /* dark text for hover */
+    --destructive: 2 73% 69%;        /* soft red #e77e7c */
+    --destructive-foreground: 40 80% 98%;
+    --border: 40 15% 82%;            /* darker warm border */
+    --input: 40 15% 82%;
+    --ring: 17 64% 59%;              /* terracotta */
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
+    /* Dark Theme - Terracotta Earth */
+    --background: 24 8% 15%;        /* #262624 */
+    --foreground: 40 10% 77%;        /* #C3C0B6 */
+    --card: 24 10% 12%;              /* #1F1E1D */
+    --card-foreground: 40 10% 77%;   /* #C3C0B6 */
+    --popover: 24 10% 12%;           /* #1F1E1D */
+    --popover-foreground: 40 10% 77%;/* #C3C0B6 */
+    --primary: 17 64% 59%;           /* #D97757 terracotta */
+    --primary-foreground: 40 80% 98%;/* #FAF9F5 */
+    --secondary: 30 6% 24%;          /* #3E3E38 */
+    --secondary-foreground: 40 10% 77%;
+    --muted: 30 6% 24%;              /* #3E3E38 */
+    --muted-foreground: 40 8% 69%;   /* #B7B5A9 */
+    --accent: 17 64% 59%;            /* #D97757 terracotta */
+    --accent-foreground: 40 80% 98%;
+    --destructive: 2 73% 69%;        /* #e77e7c */
+    --destructive-foreground: 40 80% 98%;
+    --border: 30 6% 20%;             /* slightly lighter than card */
+    --input: 30 6% 20%;
+    --ring: 17 64% 59%;              /* terracotta */
   }
 }
 
