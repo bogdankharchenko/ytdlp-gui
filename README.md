@@ -22,6 +22,38 @@ Download the latest release for your platform from the [Releases](https://github
 - **Linux**: Download `.AppImage`, `.deb`, or `.rpm` package
 - **Windows**: Download the `.msi` or `.exe` installer
 
+### macOS Installation Notes
+
+**Important**: The releases are currently unsigned. macOS will show a warning that the app is "damaged" or from an "unidentified developer."
+
+To bypass this security warning, use one of these methods:
+
+**Method 1: Remove Quarantine Attribute (Recommended)**
+```bash
+# After mounting the DMG
+xattr -cr /Volumes/ytdlp-gui/ytdlp-gui.app
+
+# Or after copying to Applications
+xattr -cr /Applications/ytdlp-gui.app
+```
+
+**Method 2: System Settings**
+1. Try to open the app (it will be blocked)
+2. Go to System Settings → Privacy & Security
+3. Scroll down to find "ytdlp-gui was blocked"
+4. Click "Open Anyway"
+
+**Method 3: Build Locally**
+```bash
+git clone https://github.com/bogdankharchenko/ytdlp-gui.git
+cd ytdlp-gui
+npm install
+npm run tauri build
+```
+The locally built app in `src-tauri/target/release/bundle/` will work without any security warnings.
+
+> **Note**: Proper code signing will be added in a future release. This requires an Apple Developer account.
+
 ## Usage
 
 1. **Paste a URL** - Enter a YouTube or supported video URL
