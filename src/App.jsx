@@ -79,7 +79,7 @@ function App() {
   const getVideoFormats = () => {
     if (!videoInfo) return [];
     const formats = videoInfo.formats
-      .filter((f) => f.vcodec !== "none" && f.acodec !== "none" && f.filesize)
+      .filter((f) => f.vcodec !== "none" && f.vcodec !== null)
       .map((f) => ({ ...f, height: f.resolution ? parseInt(f.resolution.split("x")[1]) : 0 }))
       .sort((a, b) => b.height - a.height);
 
