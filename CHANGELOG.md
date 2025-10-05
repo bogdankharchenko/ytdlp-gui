@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.1] - 2025-10-04
+
+### Bug Fixes
+
+- **Audio Downloads**: Fixed `'NoneType' object has no attribute 'lower'` error when downloading audio
+  - Ensured format parameter is always provided as a required string
+  - Added proper output format handling based on file extension
+  - Only use `--merge-output-format` for video containers (mp4, mkv, webm)
+  - Audio formats (m4a, mp3, opus) now download correctly without merge format errors
+
+### Improvements
+
+- Simplified format string logic in download function
+- Better error handling for audio/video format selection
+
 ## [0.1.0] - 2025-10-04
 
 ### Initial Release

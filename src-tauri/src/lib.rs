@@ -118,7 +118,7 @@ async fn list_formats(url: String, app: AppHandle) -> Result<String, String> {
 #[tauri::command]
 async fn download_video(
     url: String,
-    format: Option<String>,
+    format: String,
     output_path: String,
     app: AppHandle,
 ) -> Result<String, String> {
@@ -141,12 +141,28 @@ async fn download_video(
     args.push("--ffmpeg-location".to_string());
     args.push(ffmpeg_path.to_string_lossy().to_string());
 
-    if let Some(fmt) = format {
-        args.push("-f".to_string());
-        args.push(fmt);
-    } else {
-        args.push("-f".to_string());
-        args.push("bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best".to_string());
+    // Always use the provided format string
+    args.push("-f".to_string());
+    args.push(format.clone());
+
+    // Extract the file extension from output_path
+    let path = std::path::Path::new(&output_path);
+    if let Some(ext) = path.extension() {
+        if let Some(ext_str) = ext.to_str() {
+            // Only use merge-output-format for video containers (mp4, mkv, webm)
+            // Audio formats (m4a, mp3, opus) should use --audio-format and --extract-audio
+            match ext_str {
+                "mp4" | "mkv" | "webm" => {
+                    args.push("--merge-output-format".to_string());
+                    args.push(ext_str.to_string());
+                }
+                "m4a" | "mp3" | "opus" => {
+                    // For audio extraction, let yt-dlp handle it naturally
+                    // The format selector will already specify audio-only
+                }
+                _ => {}
+            }
+        }
     }
 
     args.push("-o".to_string());

@@ -111,7 +111,9 @@ function App() {
   const startDownload = async () => {
     try {
       let defaultExt = downloadType === "audio" ? "m4a" : "mp4";
-      let formatString = selectedFormat || (downloadType === "audio"
+
+      // Build format string - always ensure we have a valid value
+      const formatString = selectedFormat || (downloadType === "audio"
         ? "bestaudio[ext=m4a]/bestaudio"
         : "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best");
 
@@ -127,7 +129,12 @@ function App() {
 
       setDownloading(true);
       setProgress({ percentage: 0, speed: null, eta: null, status: "starting" });
-      await invoke("download_video", { url, format: formatString, outputPath: filePath });
+
+      await invoke("download_video", {
+        url,
+        format: formatString,
+        outputPath: filePath
+      });
     } catch (err) {
       setError(err);
       setDownloading(false);
