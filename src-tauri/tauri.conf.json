@@ -34,7 +34,8 @@
       "icons/icon.ico"
     ],
     "externalBin": [
-      "binaries/yt-dlp"
+      "binaries/yt-dlp",
+      "binaries/ffmpeg"
     ],
     "macOS": {
       "minimumSystemVersion": "10.15",

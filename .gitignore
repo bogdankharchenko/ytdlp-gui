@@ -26,3 +26,4 @@ dist-ssr
 # Tauri
 src-tauri/target
 src-tauri/binaries/yt-dlp*
+src-tauri/binaries/ffmpeg*

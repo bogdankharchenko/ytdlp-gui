@@ -124,6 +124,23 @@ async fn download_video(
 ) -> Result<String, String> {
     let mut args = vec![];
 
+    // Get ffmpeg path - we need to construct it from the resource directory
+    // Tauri places sidecar binaries in the resource directory
+    let resource_dir = app.path()
+        .resource_dir()
+        .map_err(|e| format!("Failed to get resource dir: {}", e))?;
+
+    let ffmpeg_name = if cfg!(target_os = "windows") {
+        "ffmpeg.exe"
+    } else {
+        "ffmpeg"
+    };
+
+    let ffmpeg_path = resource_dir.join(ffmpeg_name);
+
+    args.push("--ffmpeg-location".to_string());
+    args.push(ffmpeg_path.to_string_lossy().to_string());
+
     if let Some(fmt) = format {
         args.push("-f".to_string());
         args.push(fmt);
