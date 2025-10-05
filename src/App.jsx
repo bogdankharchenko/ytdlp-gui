@@ -112,10 +112,21 @@ function App() {
     try {
       let defaultExt = downloadType === "audio" ? "m4a" : "mp4";
 
-      // Build format string - always ensure we have a valid value
-      const formatString = selectedFormat || (downloadType === "audio"
-        ? "bestaudio[ext=m4a]/bestaudio"
-        : "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best");
+      // Build format string with fallback options
+      let formatString;
+      if (selectedFormat) {
+        // When a specific format is selected, add fallback to best quality
+        if (downloadType === "audio") {
+          formatString = `${selectedFormat}/bestaudio`;
+        } else {
+          formatString = `${selectedFormat}+bestaudio/bestvideo+bestaudio/best`;
+        }
+      } else {
+        // Use default best quality
+        formatString = downloadType === "audio"
+          ? "bestaudio[ext=m4a]/bestaudio"
+          : "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best";
+      }
 
       const filePath = await save({
         defaultPath: `${videoInfo.title}.${defaultExt}`,

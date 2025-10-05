@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] - 2025-10-04
+
+### Bug Fixes
+
+- **FFmpeg Path Resolution**: Fixed ffmpeg not being found in bundled macOS apps
+  - Corrected path to use `Contents/MacOS/` instead of `Contents/Resources/`
+  - Now properly resolves platform-specific binary locations
+- **Audio Extraction**: Added `-x` (extract-audio) and `--audio-format` flags for audio downloads
+  - Properly handles audio format conversion (m4a, mp3, opus)
+  - Fixed issues with audio file extension handling
+- **Format Selection**: Added fallback options for format selection
+  - When specific format is unavailable, falls back to best quality
+  - Prevents "Requested format is not available" errors
+
+### Improvements
+
+- Fixed bundle identifier warning (changed from `com.ytdlp-gui.app` to `com.ytdlp.gui`)
+- Better error handling for unavailable formats
+- More robust format string construction with fallbacks
+
 ## [0.1.1] - 2025-10-04
 
 ### Bug Fixes

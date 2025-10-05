@@ -124,41 +124,56 @@ async fn download_video(
 ) -> Result<String, String> {
     let mut args = vec![];
 
-    // Get ffmpeg path - we need to construct it from the resource directory
-    // Tauri places sidecar binaries in the resource directory
+    // Get ffmpeg path - Tauri v2 places sidecar binaries with the platform-specific suffix removed
+    // They end up in Contents/MacOS/ on macOS, next to the main binary
     let resource_dir = app.path()
         .resource_dir()
         .map_err(|e| format!("Failed to get resource dir: {}", e))?;
 
+    // On macOS, binaries are in ../MacOS relative to Resources
+    // On other platforms, they're directly in the resource dir
+    let bin_dir = if cfg!(target_os = "macos") {
+        resource_dir.parent().unwrap().join("MacOS")
+    } else {
+        resource_dir.clone()
+    };
+
+    // Tauri strips the platform suffix from sidecar binaries, so it's just "ffmpeg" (or "ffmpeg.exe" on Windows)
     let ffmpeg_name = if cfg!(target_os = "windows") {
         "ffmpeg.exe"
     } else {
         "ffmpeg"
     };
 
-    let ffmpeg_path = resource_dir.join(ffmpeg_name);
+    let ffmpeg_path = bin_dir.join(ffmpeg_name);
 
-    args.push("--ffmpeg-location".to_string());
-    args.push(ffmpeg_path.to_string_lossy().to_string());
+    // Only add ffmpeg-location if the file exists
+    if ffmpeg_path.exists() {
+        args.push("--ffmpeg-location".to_string());
+        args.push(ffmpeg_path.to_string_lossy().to_string());
+    }
 
     // Always use the provided format string
     args.push("-f".to_string());
     args.push(format.clone());
 
-    // Extract the file extension from output_path
+    // Extract the file extension from output_path and handle format accordingly
     let path = std::path::Path::new(&output_path);
+    let is_audio_format = format.contains("bestaudio") || format.contains("audio");
+
     if let Some(ext) = path.extension() {
         if let Some(ext_str) = ext.to_str() {
-            // Only use merge-output-format for video containers (mp4, mkv, webm)
-            // Audio formats (m4a, mp3, opus) should use --audio-format and --extract-audio
             match ext_str {
-                "mp4" | "mkv" | "webm" => {
+                "mp4" | "mkv" | "webm" if !is_audio_format => {
+                    // Video download - use merge output format
                     args.push("--merge-output-format".to_string());
                     args.push(ext_str.to_string());
                 }
                 "m4a" | "mp3" | "opus" => {
-                    // For audio extraction, let yt-dlp handle it naturally
-                    // The format selector will already specify audio-only
+                    // Audio download - use extract-audio and audio-format
+                    args.push("-x".to_string()); // --extract-audio
+                    args.push("--audio-format".to_string());
+                    args.push(ext_str.to_string());
                 }
                 _ => {}
             }
