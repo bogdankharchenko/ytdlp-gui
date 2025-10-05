@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::sync::{Arc, Mutex};
-use tauri::{AppHandle, Emitter, Manager};
-use std::process::Child;
+use tauri::{AppHandle, Emitter};
 use tauri_plugin_shell::ShellExt;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -31,17 +29,6 @@ pub struct DownloadProgress {
     pub speed: Option<String>,
     pub eta: Option<String>,
     pub status: String,
-}
-
-// Store the current download process
-struct DownloadState {
-    process: Option<Child>,
-}
-
-impl DownloadState {
-    fn new() -> Self {
-        Self { process: None }
-    }
 }
 
 #[tauri::command]
@@ -256,10 +243,6 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_shell::init())
-        .setup(|app| {
-            app.manage(Arc::new(Mutex::new(DownloadState::new())));
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![
             get_video_info,
             list_formats,
